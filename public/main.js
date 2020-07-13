@@ -8,29 +8,25 @@ const name = document.getElementById("name");
 
 let username='';
 nameform.addEventListener('submit', function(event){
-  if(name.value!==''){
-    username = name.value;
-    nameform.style.display ="none";
-    form.style.display ="block";
-
-    socketio.emit('signin');
-
-    const msg = {msg: username + ' さんが参加しました。', name: 'システム'};
-    socketio.emit('message', msg);
-  }
-
+  username = name.value;
   event.preventDefault();
+  nameform.style.display ="none";
+  form.style.display ="block";
 })
 
 form.addEventListener('submit', function(event){
-  if(input.value!==''){
-    const msg = {msg: input.value, name: username};
-    socketio.emit('message', msg);
-    input.value='';
-  }
+  const msg = JSON.stringify({msg: input.value, name: username})
+  socketio.emit('message', msg);
+  input.value='';
   event.preventDefault();
 })
-
 socketio.on('message',function(msg){
-  if(username===''){
-    // まだ参加していなかった
+  const obj = JSON.parse(msg);
+
+  const dt = document.createElement("dt");
+  const dd = document.createElement("dd");
+  dt.append(obj.name);
+  chats.append(dt);
+  dd.append(obj.msg);
+  chats.append(dd);
+});
