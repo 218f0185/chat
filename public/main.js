@@ -8,30 +8,53 @@ const name = document.getElementById("name");
 
 let username='';
 nameform.addEventListener('submit', function(event){
-  username = name.value;
+  if(name.value!==''){
+    username = name.value;
+    nameform.style.display ="none";
+    form.style.display ="block";
+
+    socketio.emit('signin');
+
+    const msg = {msg: username + ' さんが参加しました。', name: 'システム'};
+    socketio.emit('message', msg);
+  }
+
   event.preventDefault();
-  nameform.style.display ="none";
-  form.style.display ="block";
-
-  const msg = JSON.stringify({msg: username + ' さんが参加しました。', name: 'システム'})
-  socketio.emit('message', msg);
-
 })
 
 form.addEventListener('submit', function(event){
-  const msg = JSON.stringify({msg: input.value, name: username})
-  socketio.emit('message', msg);
-  input.value='';
+  if(input.value!==''){
+    const msg = {msg: input.value, name: username};
+    socketio.emit('message', msg);
+    input.value='';
+  }
   event.preventDefault();
 })
 
 socketio.on('message',function(msg){
-  const obj = JSON.parse(msg);
+  if(username===''){
+    // まだ参加していなかったら、チャットを表示しない
+    return;
+  }
+  displayMessage(msg);
+});
 
+// 参加時に過去のメッセージを受け取る
+socketio.on('signin',function(msgs){
+  for(let i=0;i<msgs.length;i++){
+    const msg = msgs[i];
+    displayMessage(msg);
+  }
+});
+
+function displayMessage(msg){
   const dt = document.createElement("dt");
   const dd = document.createElement("dd");
-  dt.append(obj.name);
+  const dd2 = document.createElement("dd");
+  dt.append(msg.name);
   chats.append(dt);
-  dd.append(obj.msg);
+  dd.append(msg.msg);
   chats.append(dd);
-});
+  dd2.append(new Date(msg.date));
+  chats.append(dd2);
+}
