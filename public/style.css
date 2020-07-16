@@ -7,8 +7,6 @@ h1
     text-align: center;
     background-color: #888;
     color: #fff;
-    font-size:5vw;
-    font-family: Arial, Helvetica, sans-serif;
 }
 input,
 button
@@ -40,21 +38,15 @@ button
     padding:1vw 3vw;
     display: inline-block;
 }
-#chats dt+dd
+#chats dd
 {
     margin-left: 8vw;
     position: relative;
-    background-color: #333;
+    background-color:#FF0000;
     border-radius:3vw;
     padding:1vw 3vw;
 }
-#chats dd+dd
-{
-    margin-left: 10vw;
-    font-size:2.5vw;
-}
-
-#chats dt+dd::before
+#chats dd::before
 {
     content: '';
     display: block;
@@ -71,8 +63,4 @@ button
 #form
 {
     display:none;
-}
-form
-{
-    text-align:center;
 }
